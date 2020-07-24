@@ -1,10 +1,19 @@
 {
     "skip": "Bỏ qua",
     "next": "Tiếp tục",
+    "please_wait": "Xin vui lòng chờ",
     "heading1": "Tiêu đề 1",
     "sub_heading1": "Nội dung 1",
     "heading2": "Tiêu đề 2",
     "sub_heading2": "Nội dung 2",
     "heading3": "Tiêu đề 3",
-    "sub_heading3": "Nội dung 3"
+    "sub_heading3": "Nội dung 3",
+
+    "sign_in": "Đăng nhập",
+    "sign_up": "Đăng ký",
+    "not_account": "Không có tài khoản? ",
+    "have_account": "Đã có tài khoản? ",
+
+
+    "xxx": "Nội dung 3"
 }

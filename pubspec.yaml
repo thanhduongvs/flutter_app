@@ -33,6 +33,7 @@ dependencies:
   shared_preferences: ^0.5.8
   equatable: ^1.0.0
   flutter_bloc: ^5.0.1
+  formz: ^0.2.0
 
 dev_dependencies:
   flutter_test:
