@@ -14,6 +14,12 @@
     "not_account": "Không có tài khoản? ",
     "have_account": "Đã có tài khoản? ",
 
+    "email": "Email",
+    "password": "Mật khẩu",
+    "repeat_password": "Nhập lại mật khẩu",
+    "invalid_email": "Email không hợp lệ",
+    "invalid_password": "Mật khẩu không hợp lệ",
+
 
     "xxx": "Nội dung 3"
 }

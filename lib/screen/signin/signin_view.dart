@@ -11,151 +11,143 @@ import 'signin_event.dart';
 import 'signin_state.dart';
 import 'package:formz/formz.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
+  SignInScreen({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Center(
-          child: SignInForm(),
-        ),
-      ),
-    );
-  }
+  _SignInState createState() => _SignInState();
 }
 
-class SignInForm extends StatelessWidget {
+class _SignInState extends State<SignInScreen>{
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool _isShowPassWord = false;
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignInBloc, SignInState>(
+    return BlocConsumer<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.status.isSubmissionSuccess) {
-          Scaffold.of(context).hideCurrentSnackBar();
+          print('DEBUG: isSubmissionSuccess');
+          _scaffoldKey.currentState.hideCurrentSnackBar();
           showDialog(
             context: context,
             builder: (_) => SuccessDialog(),
           );
         }
         if (state.status.isSubmissionInProgress) {
-          Scaffold.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text('Submitting...')),
-            );
+          print('DEBUG: isSubmissionInProgress');
+          _scaffoldKey.currentState.hideCurrentSnackBar();
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text('Submitting...')
+          ));
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(Dimens.medium),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Container(),
-                  ),
-                  Container(
-                    child: Center(
-                      child: FlutterLogo(
-                        size: 64,
-                      ),
+      builder: (context, state){
+        return Scaffold(
+          key: _scaffoldKey,
+          body: Padding(
+            padding: const EdgeInsets.all(Dimens.medium),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+                Container(
+                  child: Center(
+                    child: FlutterLogo(
+                      size: 64,
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(),
-                  ),
-                ],
-              ),
-            ),
-            EmailInput(),
-            PasswordInput(),
-            SubmitButton(),
-            Expanded(
-              flex: 1,
-              child: Container(),
-            ),
-            SignUpButton(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class EmailInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SignInBloc, SignInState>(
-      buildWhen: (previous, current) => previous.email != current.email,
-      builder: (context, state) {
-        return TextFormField(
-          initialValue: state.email.value,
-          decoration: InputDecoration(
-            icon: Icon(Icons.email),
-            labelText: Strings.email,
-            errorText: state.email.invalid ? 'Invalid Email' : null,
-          ),
-          keyboardType: TextInputType.emailAddress,
-          onChanged: (value) {
-            context.bloc<SignInBloc>().add(EmailChanged(email: value));
-          },
-        );
-      },
-    );
-  }
-}
-
-class PasswordInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    bool _isShowPassWord = false;
-    return BlocBuilder<SignInBloc, SignInState>(
-      buildWhen: (previous, current) => previous.password != current.password,
-      builder: (context, state) {
-        return TextFormField(
-          initialValue: state.password.value,
-          decoration: InputDecoration(
-            icon: Icon(Icons.lock),
-            labelText: 'Password',
-            errorText: state.password.invalid ? 'Invalid Password' : null,
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _isShowPassWord
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  color: Colors.black,
                 ),
-                onPressed: () {
-                  _isShowPassWord = !_isShowPassWord;
-                })
+                SizedBox(
+                  height: Dimens.medium,
+                  width: double.infinity,
+                ),
+                emailInput(context, state),
+                passwordInput(context, state),
+                buttonSignIn(context, state),
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+                gotoSignUp(context),
+              ],
+            ),
           ),
-          obscureText: !_isShowPassWord,
-          onChanged: (value) {
-            context.bloc<SignInBloc>().add(PasswordChanged(password: value));
-          },
         );
       },
     );
   }
 
-}
+  void showPassWord() {
+    setState(() {
+      _isShowPassWord = !_isShowPassWord;
+    });
+  }
 
-class SubmitButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SignInBloc, SignInState>(
-      buildWhen: (previous, current) => previous.status != current.status,
-      builder: (context, state) {
-        return RaisedButton(
-          onPressed: state.status.isValidated
-              ? () => context.bloc<SignInBloc>().add(FormSubmitted())
-              : null,
-          child: Text(translate(context, Strings.signIn)),
-        );
+  Widget emailInput(BuildContext context, SignInState state){
+    return TextFormField(
+      initialValue: state.email.value,
+      decoration: InputDecoration(
+        icon: Icon(Icons.email),
+        labelText: Strings.email,
+        errorText: state.email.invalid ? translate(context, Strings.invalidEmail) : null,
+      ),
+      keyboardType: TextInputType.emailAddress,
+      onChanged: (value) {
+        context.bloc<SignInBloc>().add(EmailChanged(email: value));
+      },
+    );
+  }
+
+  Widget passwordInput(BuildContext context, SignInState state){
+    return TextFormField(
+      initialValue: state.password.value,
+      decoration: InputDecoration(
+          icon: Icon(Icons.lock),
+          labelText: translate(context, Strings.password),
+          errorText: state.password.invalid ? translate(context, Strings.invalidPassword) : null,
+          suffixIcon: IconButton(
+              icon: Icon(
+                _isShowPassWord
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Colors.black,
+              ),
+              onPressed: showPassWord
+          )
+      ),
+      obscureText: !_isShowPassWord,
+      onChanged: (value) {
+        context.bloc<SignInBloc>().add(PasswordChanged(password: value));
+      },
+    );
+  }
+
+  Widget buttonSignIn(BuildContext context, SignInState state){
+    return RaisedButton(
+      onPressed: state.status.isValidated
+          ? () => context.bloc<SignInBloc>().add(FormSubmitted())
+          : null,
+      child: Text(translate(context, Strings.signIn)),
+    );
+  }
+
+  Widget gotoSignUp(BuildContext context){
+    return FlatButton(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(translate(context, Strings.notAccount)),
+          Text(
+            translate(context, Strings.signUp),
+            style: textBlue,
+          ),
+        ],
+      ),
+      onPressed: () {
+        Navigator.of(context).pushNamed(Routes.signUp);
       },
     );
   }
@@ -195,28 +187,6 @@ class SuccessDialog extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class SignUpButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FlatButton(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(translate(context, Strings.notAccount)),
-          Text(
-            translate(context, Strings.signUp),
-            style: textBlue,
-          ),
-        ],
-      ),
-      onPressed: () {
-        Navigator.of(context).pushNamed(Routes.signUp);
-      },
     );
   }
 }

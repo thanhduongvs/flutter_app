@@ -14,6 +14,13 @@
     "not_account": "Don't have an account? ",
     "have_account": "Already have an account? ",
 
+    "email": "Email",
+    "password": "Password",
+    "repeat_password": "Repeat password",
+    "invalid_email": "Invalid email",
+    "invalid_password": "Invalid password",
+
+
 
     "xxx": "Nội dung 3"
 }

@@ -15,9 +15,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   @override
-  Stream<SignUpState> mapEventToState(
-      SignUpEvent event,
-      ) async* {
+  Stream<SignUpState> mapEventToState(SignUpEvent event) async* {
     if (event is EmailChanged) {
       final email = Email.dirty(event.email);
       yield state.copyWith(

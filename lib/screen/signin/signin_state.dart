@@ -17,7 +17,7 @@ class SignInState extends Equatable {
   SignInState copyWith({
     Email email,
     Password password,
-    FormzStatus status,
+    FormzStatus status
   }) {
     return SignInState(
       email: email ?? this.email,

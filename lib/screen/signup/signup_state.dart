@@ -11,18 +11,18 @@ class SignUpState extends Equatable {
   const SignUpState({
     this.email = const Email.pure(),
     this.password = const Password.pure(),
-    this.status = FormzStatus.pure,
+    this.status = FormzStatus.pure
   });
 
   SignUpState copyWith({
     Email email,
     Password password,
-    FormzStatus status,
+    FormzStatus status
   }) {
     return SignUpState(
       email: email ?? this.email,
       password: password ?? this.password,
-      status: status ?? this.status,
+      status: status ?? this.status
     );
   }
 
