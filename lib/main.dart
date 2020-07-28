@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:iot_kminh/network/base_service.dart';
 import 'package:iot_kminh/screen/routes.dart';
 import 'package:iot_kminh/screen/signin/signin_view.dart';
 import 'package:iot_kminh/screen/splash/splash_screen.dart';
+import 'network/repository.dart';
+import 'page/post/post_bloc.dart';
 import 'screen/home/home.dart';
 import 'screen/onboarding/onboarding_bloc.dart';
 import 'screen/onboarding/onboarding_view.dart';
@@ -13,14 +16,21 @@ import 'screen/signup/signup_view.dart';
 import 'utils/lang.dart';
 import 'utils/localization.dart';
 import 'utils/shared_prefs.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
+  final Repository repository = Repository(
+    service: BaseService(
+      httpClient: http.Client(),
+    ),
+  );
   runApp(
       MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => OnboardingBloc(),),
             BlocProvider(create: (context) => SignInBloc(),),
             BlocProvider(create: (context) => SignUpBloc(),),
+            BlocProvider(create: (context) => PostBloc(repository: repository),),
           ],
           child: JocoApp()
       )

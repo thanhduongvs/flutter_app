@@ -16,5 +16,4 @@ class Strings {
   static const repeatPassword = 'repeat_password';
   static const invalidEmail = 'invalid_email';
   static const invalidPassword = 'invalid_password';
-
 }

@@ -72,6 +72,7 @@ class _OnboardingState extends State<OnboardingScreen> {
                       child: Container(),
                     ),
                     nextButton(),
+                    progressButton(),
                     Expanded(
                       flex: 1,
                       child: Container(),
@@ -155,9 +156,10 @@ class _OnboardingState extends State<OnboardingScreen> {
       height: 40,
       onPressed: () async {
         int score = await Future.delayed(
-            const Duration(milliseconds: 3000), () => 42);
+            const Duration(milliseconds: 1000), () => 42);
         // After [onPressed], it will trigger animation running backwards, from end to beginning
         return () {
+            Navigator.of(context).pushNamed(Routes.home);
           // Optional returns is returning a VoidCallback that will be called
           // after the animation is stopped at the beginning.
           // A best practice would be to do time-consuming task in [onPressed],

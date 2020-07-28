@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:iot_kminh/model/language.dart';
-import 'package:iot_kminh/utils/lang.dart';
-import 'package:iot_kminh/utils/shared_prefs.dart';
-import '../../main.dart';
+import 'package:iot_kminh/page/post/post_page.dart';
+import 'package:iot_kminh/page/search/search_page.dart';
+import 'package:iot_kminh/resources/styles.dart';
+import 'package:iot_kminh/widget/bottom_bar_view.dart';
+import 'package:iot_kminh/widget/tabIcon_data.dart';
+import '../../page/map/map_page.dart';
+import '../../page/profile/profile_page.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -13,224 +16,150 @@ class HomeScreen extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomeScreen> {
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  void _changeLanguage(Language language) async {
-    print('DEBUG: _changeLanguage ${language.languageCode}');
-    Locale _locale = await setLocale(language.languageCode);
-    JocoApp.setLocale(context, _locale);
+class _HomePageState extends State<HomeScreen> with TickerProviderStateMixin {
+
+  AnimationController animationController;
+  List<TabIconData> tabIconsList = TabIconData.tabIconsList;
+  Widget tabBody = Container(
+    color: FintnessAppTheme.background,
+  );
+
+  String json = '{"status": 1,"msg": "Login Successfully","data":{"id": "735584","login": "tinh.nhi@gmail.com","name": "Tịnh Nhi","bio": "Profile"}}';
+
+  @override
+  void initState() {
+
+    //var login = LoginResponse.fromJson(json);
+    //print('DEBUG status: ${login.status}');
+    //print('DEBUG name: ${login.data.name}');
+    tabIconsList.forEach((TabIconData tab) {
+      tab.isSelected = false;
+    });
+    tabIconsList[0].isSelected = true;
+
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 600), vsync: this);
+    tabBody = PostPage(animationController: animationController);
+    super.initState();
   }
 
-  void _initLanguage(String language) async {
-    print('DEBUG: _changeLanguage $language');
-    Locale _locale = await setLocale(language);
-    JocoApp.setLocale(context, _locale);
-  }
-
-  void _showSuccessDialog() {
-    showTimePicker(context: context, initialTime: TimeOfDay.now());
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool first = SharedPrefs.isFirst();
-    if(first == false){
-      String languageCode = Platform.localeName.split('_')[0];
-      if(languageCode == 'vi'){
-        _initLanguage('vi');
-      } else {
-        _initLanguage('en');
-      }
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(translate(context, 'home_page')),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButton<Language>(
-              underline: SizedBox(),
-              icon: Icon(
-                Icons.language,
-                color: Colors.white,
-              ),
-              onChanged: (Language language) {
-                _changeLanguage(language);
-              },
-              items: Language.languageList()
-                  .map<DropdownMenuItem<Language>>(
-                    (e) => DropdownMenuItem<Language>(
-                  value: e,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Text(
-                        e.flag,
-                        style: TextStyle(fontSize: 30),
-                      ),
-                      Text(e.name)
-                    ],
-                  ),
-                ),
-              )
-                  .toList(),
-            ),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: _drawerList(),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: _mainForm(context),
-      ),
-    );
-  }
-
-  Form _mainForm(BuildContext context) {
-    return Form(
-      key: _key,
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height / 4,
-            child: Center(
-              child: Text(
-                translate(context, 'personal_information'),
-                // DemoLocalization.of(context).translate('personal_information'),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          TextFormField(
-            validator: (val) {
-              if (val.isEmpty) {
-                return translate(context, 'required_field');
-                // return DemoLocalization.of(context).translate('required_fiedl');
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: translate(context, 'name'),
-              hintText: translate(context, 'name_hint'),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            validator: (val) {
-              if (val.isEmpty) {
-                return translate(context, 'required_field');
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: translate(context, 'email'),
-              hintText: translate(context, 'email_hint'),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: translate(context, 'date_of_birth')),
-            onTap: () async {
-              FocusScope.of(context).requestFocus(FocusNode());
-              await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(DateTime.now().year),
-                lastDate: DateTime(DateTime.now().year + 20),
-              );
-            },
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          MaterialButton(
-            onPressed: () {
-              if (_key.currentState.validate()) {
-                _showSuccessDialog();
-              }
-            },
-            height: 50,
-            shape: StadiumBorder(),
-            color: Theme.of(context).primaryColor,
-            child: Center(
-              child: Text(
-                translate(context, 'submit_info'),
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Container _drawerList() {
-    TextStyle _textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 24,
-    );
     return Container(
-      color: Theme.of(context).primaryColor,
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            child: Container(
-              height: 100,
-              child: CircleAvatar(),
-            ),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.info,
-              color: Colors.white,
-              size: 30,
-            ),
-            title: Text(
-              translate(context, 'about_us'),
-              style: _textStyle,
-            ),
-            onTap: () {
-              // To close the Drawer
-              //Navigator.pop(context);
-              // Navigating to About Page
-              //Navigator.pushNamed(context, aboutRoute);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.settings,
-              color: Colors.white,
-              size: 30,
-            ),
-            title: Text(
-              translate(context, 'settings'),
-              style: _textStyle,
-            ),
-            onTap: () {
-              // To close the Drawer
-              //Navigator.pop(context);
-              // Navigating to About Page
-              //Navigator.pushNamed(context, settingsRoute);
-            },
-          ),
-        ],
+      color: FintnessAppTheme.background,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: FutureBuilder<bool>(
+          future: getData(),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (!snapshot.hasData) {
+              return const SizedBox();
+            } else {
+              return Stack(
+                children: <Widget>[
+                  tabBody,
+                  bottomBar(),
+                ],
+              );
+            }
+          },
+        ),
       ),
+    );
+  }
+
+  Future<bool> getData() async {
+    await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+    return true;
+  }
+
+  Widget bottomBar() {
+    return Column(
+      children: <Widget>[
+        const Expanded(
+          child: SizedBox(),
+        ),
+        BottomBarView(
+          tabIconsList: tabIconsList,
+          addClick: () {
+            _settingModalBottomSheet(context);
+          },
+          changeIndex: (int index) {
+            if (index == 0) {
+              animationController.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      PostPage(animationController: animationController);
+                });
+              });
+            } else if (index == 1) {
+              animationController.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      SearchPage(animationController: animationController);
+                });
+              });
+            }else if (index == 2) {
+              animationController.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      MapPage(animationController: animationController);
+                });
+              });
+            }else if (index == 3) {
+              animationController.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      ProfilePage(animationController: animationController);
+                });
+              });
+            }
+
+          },
+        ),
+      ],
+    );
+  }
+
+  void _settingModalBottomSheet(context){
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc){
+          return Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.music_note),
+                    title: new Text('Music'),
+                    onTap: () => {}
+                ),
+                new ListTile(
+                  leading: new Icon(Icons.videocam),
+                  title: new Text('Video'),
+                  onTap: () => {},
+                ),
+              ],
+            ),
+          );
+        }
     );
   }
 }
