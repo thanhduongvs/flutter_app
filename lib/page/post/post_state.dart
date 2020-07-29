@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:iot_kminh/model/response/login_response.dart';
+import 'package:iot_kminh/model/response/post_response.dart';
 import 'package:iot_kminh/model/response/profile_response.dart';
-import 'package:iot_kminh/model/users.dart';
 import 'package:meta/meta.dart';
 
 abstract class PostState extends Equatable {
@@ -11,18 +11,9 @@ abstract class PostState extends Equatable {
   List<Object> get props => [];
 }
 
-class QuoteEmpty extends PostState {}
-
-class QuoteLoading extends PostState {}
-
-class QuoteLoaded extends PostState {
-  final Users quote;
-
-  const QuoteLoaded({@required this.quote}) : assert(quote != null);
-
-  @override
-  List<Object> get props => [quote];
-}
+class PostInitial extends PostState {}
+class PostLoading extends PostState {}
+class PostError extends PostState {}
 
 class LoginLoaded extends PostState {
   final LoginResponse response;
@@ -42,4 +33,12 @@ class ProfileLoaded extends PostState {
   List<Object> get props => [profile];
 }
 
-class QuoteError extends PostState {}
+class PostLoaded extends PostState {
+  final PostResponse post;
+
+  const PostLoaded({@required this.post}) : assert(post != null);
+
+  @override
+  List<Object> get props => [post];
+}
+

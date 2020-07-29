@@ -20,13 +20,13 @@ class _PostState extends State<PostPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
       builder: (context, state) {
-        if (state is QuoteEmpty) {
+        if (state is PostInitial) {
           //BlocProvider.of<PostBloc>(context).add(FetchQuote());
           //context.bloc<PostBloc>().add(FetchQuote());
-          //context.bloc<PostBloc>().add(Login());
-          context.bloc<PostBloc>().add(Profile());
+          context.bloc<PostBloc>().add(FetchPost());
+          //context.bloc<PostBloc>().add(Profile());
         }
-        if (state is QuoteError) {
+        if (state is PostError) {
           return Center(
             child: Text('failed to fetch quote'),
           );
@@ -44,7 +44,18 @@ class _PostState extends State<PostPage> with TickerProviderStateMixin {
           );
         }
         return Center(
-          child: CircularProgressIndicator(),
+          //child: CircularProgressIndicator(),
+          child: ListView.builder(
+            itemCount: 10,
+            itemBuilder: (BuildContext context, int index){
+              return ListTile(
+                leading: Text('$index'),
+                title: Text('Hello'),
+                isThreeLine: true,
+                subtitle: Text('hahah'),
+              );
+            }
+          ),
         );
       },
     );

@@ -1,17 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:iot_kminh/model/request/login_request.dart';
 import 'package:iot_kminh/model/response/login_response.dart';
+import 'package:iot_kminh/model/response/post_response.dart';
 import 'package:iot_kminh/model/response/profile_response.dart';
 import 'package:iot_kminh/model/users.dart';
 import 'package:iot_kminh/network/api_service.dart';
-import 'package:meta/meta.dart';
 
 class BaseService {
   final _baseUrl = 'http://qa.joco.asia:9999/';
-  final http.Client httpClient;
   final token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMwLCJpc3MiOiJodHRwOi8vcWEuam9jby5hc2lhOjk5OTkvYXBpL3RhaS1raG9hbi9kYW5nLW5oYXAiLCJpYXQiOjE1OTQ3MTM1NzcsImV4cCI6MTU5NzMwNTU3NywibmJmIjoxNTk0NzEzNTc3LCJqdGkiOiJlNm9WQUViZnpScWVSWmtIIn0.9yB9OUO_v3cvQ76M056tcpJnuiZ2xfYW1ChSyrypmNE';
 
   Map<String, String> headers = {
@@ -19,14 +17,13 @@ class BaseService {
     'X-localization': 'vi',
   };
 
-  BaseService({
-    @required this.httpClient,
-  }) : assert(httpClient != null);
+  BaseService();
 
   Future<Users> fetchQuote() async {
     final url = '$_baseUrl${Api.user}';
     print('api: $url');
-    final response = await this.httpClient.get(url);
+    //final response = await this.httpClient.get(url);
+    Response response = await get(url);
     if (response.statusCode != 200) {
       throw new Exception('error getting quotes');
     }
@@ -43,7 +40,7 @@ class BaseService {
     var x = LoginRequest(account: '0906055960', password: '123456789');
     String body = jsonEncode(x.toJson());
     print('api start: $body');
-    final response = await post(url, headers: headers, body: body);
+    Response response = await post(url, headers: headers, body: body);
     if (response.statusCode != 200) {
       throw new Exception('error getting quotes');
     }
@@ -62,7 +59,7 @@ class BaseService {
       HttpHeaders.authorizationHeader: "Bearer $token",
     };
     print('api: $url');
-    final response = await get(url, headers: header);
+    Response response = await get(url, headers: header);
     if (response.statusCode != 200) {
       throw new Exception('error getting quotes');
     }
@@ -71,6 +68,22 @@ class BaseService {
     print('api response: ${response.body}');
     print('api body: $json');
     return ProfileResponse.fromJson(json);
+  }
+
+  Future<PostResponse> getPost({int postType, int limit}) async {
+    var queryParam = {
+      'theLoaiBaiDangID': '$postType',
+      'soLuongDaHienThi': '$limit',
+    };
+    var uri = Uri(path: '${Api.post}', queryParameters: queryParam);
+    final url = '$_baseUrl$uri';
+    print('api: $url');
+    Response response = await get(url);
+    if (response.statusCode != 200) {
+      throw new Exception('error getting quotes');
+    }
+    final json = jsonDecode(response.body);
+    return PostResponse.fromJson(json);
   }
 
   /// https://viblo.asia/p/tao-http-request-trong-flutter-07LKXmJeZV4

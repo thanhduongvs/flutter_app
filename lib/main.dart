@@ -16,13 +16,10 @@ import 'screen/signup/signup_view.dart';
 import 'utils/lang.dart';
 import 'utils/localization.dart';
 import 'utils/shared_prefs.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   final Repository repository = Repository(
-    service: BaseService(
-      httpClient: http.Client(),
-    ),
+    service: BaseService(),
   );
   runApp(
       MultiBlocProvider(

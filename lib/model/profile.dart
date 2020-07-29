@@ -23,7 +23,7 @@ class Profile {
     var jsonWorking = json['quaTrinhCongTacs'] as List;
     List<Working> _working = jsonWorking.map((jsonData) => Working.fromJson(jsonData)).toList();
     var jsonSkill = json['kyNangs'] as List;
-    List<Skill> _skill = jsonWorking.map((jsonData) => Skill.fromJson(jsonData)).toList();
+    List<Skill> _skill = jsonSkill.map((jsonData) => Skill.fromJson(jsonData)).toList();
     return Profile(
       userInfo: _userInfo,
       images: _image,

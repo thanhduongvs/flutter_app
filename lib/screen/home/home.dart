@@ -24,14 +24,17 @@ class _HomePageState extends State<HomeScreen> with TickerProviderStateMixin {
     color: FintnessAppTheme.background,
   );
 
-  String json = '{"status": 1,"msg": "Login Successfully","data":{"id": "735584","login": "tinh.nhi@gmail.com","name": "Tịnh Nhi","bio": "Profile"}}';
-
   @override
   void initState() {
-
-    //var login = LoginResponse.fromJson(json);
-    //print('DEBUG status: ${login.status}');
-    //print('DEBUG name: ${login.data.name}');
+    int vs;
+    var queryParam = {
+      'theLoaiBaiDangID': '3',
+      'soLuongDaHienThi': '$vs',
+    };
+    var uris = Uri(path: 'users/thanhduongvs', queryParameters: queryParam);
+    var uri = Uri.http('qa.joco.asia:9999', '/users/thanhduongvs', queryParam);
+    print('XXXX: $uri');
+    print('XXXX: $uris');
     tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
