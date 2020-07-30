@@ -11,10 +11,12 @@ class Profile {
   final List<Working> workings;
   final List<Skill> skills;
 
-  const Profile({this.userInfo, this.images, this.educations,
-    this.workings, this.skills});
+  Profile({
+    this.userInfo, this.images, this.educations, this.workings, this.skills
+  });
 
-  static Profile fromJson(dynamic json) {
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     var _userInfo = User.fromJson(json['thongTinCoBan']);
     var jsonImage = json['anhNoiBats'] as List;
     List<ImageHighlight> _image = jsonImage.map((jsonData) => ImageHighlight.fromJson(jsonData)).toList();
@@ -29,7 +31,7 @@ class Profile {
       images: _image,
       educations: _education,
       workings: _working,
-      skills: _skill
+      skills: _skill,
     );
   }
 }

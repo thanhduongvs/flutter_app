@@ -2,12 +2,13 @@ class Skill {
   final int id;
   final String skill;
 
-  const Skill({this.id, this.skill});
+  Skill({this.id, this.skill});
 
-  static Skill fromJson(dynamic json) {
+  factory Skill.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return Skill(
         id: json['id'],
-        skill: json['skill']
+        skill: json['skill'],
     );
   }
 }

@@ -13,6 +13,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   @override
   Stream<PostState> mapEventToState(PostEvent event) async* {
+    final currentState = state;
     if (event is Login){
       yield PostLoading();
       try {
@@ -20,7 +21,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         yield LoginLoaded(response: response);
       } catch (e) {
         print("AAA The value is $e");
-        yield PostError();
+        yield PostFailure();
       }
     }else if (event is Profile){
       yield PostLoading();
@@ -29,17 +30,36 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         yield ProfileLoaded(profile: profile);
       } catch (e) {
         print("AAA The value is $e");
-        yield PostError();
+        yield PostFailure();
       }
-    }else if (event is FetchPost){
+    } else if (event is PostFetched && !_hasReachedMax(currentState)) {
+      print("DEBUG: PostFetched");
       yield PostLoading();
       try {
-        final PostResponse profile = await repository.getPost(postType: 0, limit: 0);
-        yield PostLoaded(post: profile);
+        if (currentState is PostInitial) {
+          final PostResponse response = await repository.getPost(postType: 0, limit: 0);
+          yield PostSuccess(posts: response.data.posts, hasReachedMax: false);
+          //return;
+        }
+        if (currentState is PostSuccess) {
+          final PostResponse response = await repository.getPost(postType: 0, limit: currentState.posts.length);
+          final posts = response.data.posts;
+          yield posts.isEmpty
+              ? currentState.copyWith(hasReachedMax: true)
+              : PostSuccess(
+            posts: currentState.posts + posts,
+            hasReachedMax: false,
+          );
+        }
       } catch (e) {
-        print("AAA The value is $e");
-        yield PostError();
+        print("Post Error: $e");
+        yield PostFailure();
       }
     }
   }
+
+  bool _hasReachedMax(PostState state) =>
+      state is PostSuccess && state.hasReachedMax;
+
+
 }

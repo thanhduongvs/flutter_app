@@ -1,18 +1,18 @@
 import '../post_data.dart';
 
 class PostResponse {
-
   final int status;
   final String message;
   final PostData data;
 
-  const PostResponse({this.status, this.message, this.data});
+  PostResponse({this.status, this.message, this.data});
 
-  static PostResponse fromJson(dynamic json) {
+  factory PostResponse.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return PostResponse(
-      status: json['status'],
-      message: json['msg'],
-      data: PostData.fromJson(json['data'])
+      status: json['status'] ?? null,
+      message: json['msg'] ?? null,
+      data: PostData.fromJson(json['data']) ?? null,
     );
   }
 }

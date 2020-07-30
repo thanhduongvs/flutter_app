@@ -6,18 +6,19 @@ class PostContent {
   final String url;
   final String time;
 
+  PostContent({
+    this.id, this.content, this.number, this.deadline, this.url, this.time
+  });
 
-  const PostContent({this.id, this.content, this.number,
-    this.deadline, this.url, this.time});
-
-  static PostContent fromJson(dynamic json) {
+  factory PostContent.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return PostContent(
       id: json['id'],
       content: json['noiDung'],
       number: json['soLuongTuyen'],
       deadline: json['hanNopHoSo'],
       url: json['url'],
-      time: json['ngayDang']
+      time: json['ngayDang'],
     );
   }
 }

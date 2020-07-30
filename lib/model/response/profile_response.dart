@@ -1,18 +1,18 @@
 import '../profile.dart';
 
 class ProfileResponse {
-
   final int status;
   final String message;
   final Profile data;
 
-  const ProfileResponse({this.status, this.message, this.data});
+  ProfileResponse({this.status, this.message, this.data});
 
-  static ProfileResponse fromJson(dynamic json) {
+  factory ProfileResponse.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return ProfileResponse(
-      status: json['status'],
-      message: json['msg'],
-      data: Profile.fromJson(json['data'])
+      status: json['status'] ?? null,
+      message: json['msg'] ?? null,
+      data: Profile.fromJson(json['data']) ?? null,
     );
   }
 }

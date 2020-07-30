@@ -1,18 +1,18 @@
 import '../user.dart';
 
 class LoginResponse {
-
   final int status;
   final String message;
   final User data;
 
-  const LoginResponse({this.status, this.message, this.data});
+  LoginResponse({this.status, this.message, this.data});
 
-  static LoginResponse fromJson(dynamic json) {
+  factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return LoginResponse(
       status: json['status'],
       message: json['msg'],
-      data: User.fromJson(json['data'])
+      data:User.fromJson(json['data']),
     );
   }
 }

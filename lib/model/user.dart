@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-
 class User {
   final String userId;
   final String email;
@@ -14,11 +12,14 @@ class User {
   final String account;
   final String token;
 
-  const User({this.userId, this.email, this.userName, this.userType,
-      this.gender, this.birthDate, this.phone, this.imageAvatar,
-      this.imageCover, this.address, this.account, this.token});
+  User({
+    this.userId, this.email, this.userName, this.userType, this.gender,
+    this.birthDate, this.phone, this.imageAvatar, this.imageCover,
+    this.address, this.account, this.token
+  });
 
-  static User fromJson(dynamic json) {
+  factory User.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return User(
       userId: json['maNguoiDung'],
       email: json['email'],
@@ -31,7 +32,7 @@ class User {
       imageCover: json['anhBia'],
       address: json['diaChi'],
       account: json['taiKhoan'],
-      token: json['tokenKey']
+      token: json['tokenKey'],
     );
   }
 }

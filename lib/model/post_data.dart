@@ -4,14 +4,15 @@ class PostData {
   final List<Post> posts;
   final int count;
 
-  const PostData({this.posts, this.count});
+  PostData({this.posts, this.count});
 
-  static PostData fromJson(dynamic json) {
-    var jsonPost = json['baiDangs_DanhSach'] as List;
-    List<Post> _posts = jsonPost.map((jsonData) => Post.fromJson(jsonData)).toList();
+  factory PostData.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
+    var js = json['baiDangs_DanhSach'] as List;
+    List<Post> _posts = js.map((data) => Post.fromJson(data)).toList();
     return PostData(
       posts: _posts,
-      count: json['soLuongDaHienThi']
+      count: json['soLuongDaHienThi'] ,
     );
   }
 }

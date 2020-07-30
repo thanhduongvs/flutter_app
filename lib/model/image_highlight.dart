@@ -2,12 +2,13 @@ class ImageHighlight {
   final int id;
   final String url;
 
-  const ImageHighlight({this.id, this.url});
+  ImageHighlight({this.id, this.url});
 
-  static ImageHighlight fromJson(dynamic json) {
+  factory ImageHighlight.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return ImageHighlight(
-        id: json['id'],
-        url: json['url']
+      id: json['id'],
+      url: json['url'],
     );
   }
 }

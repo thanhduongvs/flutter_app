@@ -10,11 +10,13 @@ class Education {
   final String updated;
   final String level;
 
-  const Education({this.id, this.userId, this.school, this.major,
-      this.levelId, this.startDay, this.endDay, this.created,
-      this.updated, this.level});
+  Education({
+    this.id, this.userId, this.school, this.major, this.levelId,
+    this.startDay, this.endDay, this.created, this.updated, this.level
+  });
 
-  static Education fromJson(dynamic json) {
+  factory Education.fromJson(Map<String, dynamic> json) {
+    if(json == null) return null;
     return Education(
       id: json['id'],
       userId: json['nguoiDungID'],

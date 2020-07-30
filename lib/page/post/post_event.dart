@@ -10,8 +10,8 @@ class Login extends PostEvent {
   List<Object> get props => [];
 }
 
-class FetchPost extends PostEvent {
-  const FetchPost();
+class PostFetched extends PostEvent {
+  const PostFetched();
   @override
   List<Object> get props => [];
 }
