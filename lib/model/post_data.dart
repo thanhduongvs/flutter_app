@@ -1,4 +1,4 @@
-import 'package:iot_kminh/model/post.dart';
+import 'package:iot_kminh/model/models.dart';
 
 class PostData {
   final List<Post> posts;

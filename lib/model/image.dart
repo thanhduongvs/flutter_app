@@ -1,4 +1,4 @@
-import 'package:iot_kminh/model/thumbnail.dart';
+import 'package:iot_kminh/model/models.dart';
 
 class Image {
   final int id;

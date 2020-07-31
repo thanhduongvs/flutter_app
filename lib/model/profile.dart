@@ -1,8 +1,4 @@
-import 'package:iot_kminh/model/education.dart';
-import 'package:iot_kminh/model/image_highlight.dart';
-import 'package:iot_kminh/model/skill.dart';
-import 'package:iot_kminh/model/user.dart';
-import 'package:iot_kminh/model/working.dart';
+import 'package:iot_kminh/model/models.dart';
 
 class Profile {
   final User userInfo;
@@ -18,14 +14,22 @@ class Profile {
   factory Profile.fromJson(Map<String, dynamic> json) {
     if(json == null) return null;
     var _userInfo = User.fromJson(json['thongTinCoBan']);
-    var jsonImage = json['anhNoiBats'] as List;
-    List<ImageHighlight> _image = jsonImage.map((jsonData) => ImageHighlight.fromJson(jsonData)).toList();
-    var jsonEducation = json['hocVans'] as List;
-    List<Education> _education = jsonEducation.map((jsonData) => Education.fromJson(jsonData)).toList();
-    var jsonWorking = json['quaTrinhCongTacs'] as List;
-    List<Working> _working = jsonWorking.map((jsonData) => Working.fromJson(jsonData)).toList();
-    var jsonSkill = json['kyNangs'] as List;
-    List<Skill> _skill = jsonSkill.map((jsonData) => Skill.fromJson(jsonData)).toList();
+    var jsImage = json['anhNoiBats'] as List;
+    var jsEducation = json['hocVans'] as List;
+    var jsWorking = json['quaTrinhCongTacs'] as List;
+    var jsSkill = json['kyNangs'] as List;
+    List<ImageHighlight> _image = jsImage.map(
+      (data) => ImageHighlight.fromJson(data)
+    ).toList();
+    List<Education> _education = jsEducation.map(
+      (data) => Education.fromJson(data)
+    ).toList();
+    List<Working> _working = jsWorking.map(
+      (data) => Working.fromJson(data)
+    ).toList();
+    List<Skill> _skill = jsSkill.map(
+      (data) => Skill.fromJson(data)
+    ).toList();
     return Profile(
       userInfo: _userInfo,
       images: _image,

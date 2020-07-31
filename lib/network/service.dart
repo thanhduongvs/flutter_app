@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:iot_kminh/model/request/request.dart';
 import 'package:iot_kminh/model/response/response.dart';
-
-import 'api_service.dart';
+import 'package:iot_kminh/utils/shared_prefs.dart';
+import 'api.dart';
 
 class BaseService {
   final _baseUrl = 'http://qa.joco.asia:9999/';
@@ -19,6 +19,7 @@ class BaseService {
   BaseService();
 
   Future<LoginResponse> login() async {
+
     final url = '$_baseUrl${Api.login}';
     print('api: $url');
     var x = LoginRequest(account: '0906055960', password: '123456789');
@@ -36,19 +37,18 @@ class BaseService {
   }
 
   Future<ProfileResponse> getProfile() async {
+    if(SharedPrefs.getAuthToken() != null){
+      headers.addAll({
+        HttpHeaders.authorizationHeader: 'Bearer ${SharedPrefs.getAuthToken()}',
+      });
+    }
     final url = '$_baseUrl${Api.profile}';
-    Map<String, String> header = {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'X-localization': 'vi',
-      HttpHeaders.authorizationHeader: "Bearer $token",
-    };
-    print('api: $url');
-    http.Response response = await http.get(url, headers: header);
+    final response = await http.get(url, headers: headers);
     if (response.statusCode != 200) {
       throw new Exception('error getting quotes');
     }
-
     final json = jsonDecode(response.body);
+    debugPrint('api: ${response.request.toString()}');
     print('api response: ${response.body}');
     print('api body: $json');
     return ProfileResponse.fromJson(json);
