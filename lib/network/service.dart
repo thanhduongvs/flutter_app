@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:iot_kminh/model/request/login_request.dart';
-import 'package:iot_kminh/model/response/login_response.dart';
-import 'package:iot_kminh/model/response/post_response.dart';
-import 'package:iot_kminh/model/response/profile_response.dart';
-import 'package:iot_kminh/network/api_service.dart';
+import 'package:iot_kminh/model/request/request.dart';
+import 'package:iot_kminh/model/response/response.dart';
+
+import 'api_service.dart';
 
 class BaseService {
   final _baseUrl = 'http://qa.joco.asia:9999/';
@@ -62,16 +61,14 @@ class BaseService {
     };
     var uri = Uri(path: '${Api.post}', queryParameters: queryParam);
     final url = '$_baseUrl$uri';
-    print('api: $url');
     final response = await http.get(url, headers: headers);
     if (response.statusCode != 200) {
       throw new Exception('error getting quotes');
     }
+    debugPrint('api: ${response.request.toString()}');
     String xxx = response.body.toString();
     debugPrint('api response: $xxx');
     final data = json.decode(response.body);
-    debugPrint('api response: ${response.body.toString()}');
-    debugPrint('api body: $data');
     return PostResponse.fromJson(data);
   }
 
